@@ -5,17 +5,6 @@
 # all these functions should be in the makefile
 
 
-include(){
-
-  for file in "$@"; do
-
-    echo $file;
-
-    [ -r $file ] && [ -f $file ] && . $file
-
-  done;
-
-}
 
 application_installed(){
 
