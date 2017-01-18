@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+pkgmgr(){
+
+  # if [[ condition ]]; then
+  #   #statements
+  # fi
+  return apt-get
+}

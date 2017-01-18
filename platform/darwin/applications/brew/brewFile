@@ -1,0 +1,67 @@
+tap 'caskroom/cask'
+tap 'homebrew/bundle'
+tap 'homebrew/core'
+tap 'homebrew/services'
+tap 'caskroom/fonts' 
+
+brew 'gnu-sed', args:[ 'with-default-names']
+brew 'homebrew/php/wp-cli'
+brew 'ack'
+brew 'mas'
+brew 'autoconf'
+brew 'autojump'
+brew 'xz'
+brew 'saxon-b'
+brew 'automake'
+brew 'colordiff'
+brew 'libpng'
+brew 'freetype'
+brew 'git'
+brew 'git-flow'
+brew 'hub'
+brew 'icoutils'
+brew 'libtool'
+brew 'jpeg'
+brew 'libtiff'
+brew 'imagemagick'
+brew 'openssl'
+brew 'libevent'
+brew 'memcached'
+brew 'libmemcached'
+brew 'libxml2'
+brew 'mas'
+brew 'mysql'
+brew 'ossp-uuid'
+brew 'readline'
+brew 'postgresql'
+brew 'tmux'
+brew 'wget'
+
+cask 'appcleaner'
+cask 'github-desktop'
+
+cask 'iterm2'
+
+cask 'sublime-text'
+cask 'visual-studio-code'
+
+cask 'transmit'
+
+cask 'docker-toolbox'
+cask 'vagrant'
+cask 'vagrant-manager'
+#browsers
+cask 'google-chrome'
+cask 'firefox'
+
+
+mas 'QuickBooks', id: 640830064
+mas 'CARROT Weather', id: 993487541
+mas 'iMovie', id: 408981434
+mas 'Pages', id: 409201541
+mas 'Xcode', id: 497799835
+mas 'Veertu', id: 1024069033
+mas 'Slack', id: 803453959
+mas 'WiFi Explorer', id: 494803304
+mas 'WiFi Signal', id: 525912054
+mas 'Numbers', id: 409203825

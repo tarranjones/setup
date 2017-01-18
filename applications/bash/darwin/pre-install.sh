@@ -1,0 +1,1 @@
+install_application $PLATFORM_APPLICATIONS/brew
