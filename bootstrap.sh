@@ -50,9 +50,9 @@ install_application(){
 
   # if installed else add remove
 
-
 }
 
+# su - $USER
 
 if [ -z "$USR_SRC" ]; then
   export USR_SRC="/usr/local/src";
