@@ -13,5 +13,5 @@
 
 # brew bundle check
 
-# brew install nvm
+brew install nvm
 # limechat
