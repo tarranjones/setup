@@ -1,0 +1,73 @@
+#!/usr/bin/env bash
+
+
+
+pkgmgr(){
+
+  # if [[ condition ]]; then
+  #   #statements
+  # fi
+  # return apt-get
+}
+
+package_installed(){
+  dpkg -l "$1" >/dev/null 2>&1
+}
+
+
+function add_repo(){
+  add-repository "$@"
+}
+
+function app-get(){
+  # if [[ 'ubuntu' ]]; then
+  #   apt-get "$@"
+  # fi
+  apt-get "$@"
+}
+function app-get-install() {
+    app-get install -y "$@" > /dev/null
+}
+function app-get-update() {
+     app-get update -y "$@" > /dev/null
+}
+
+function app_install_norecommends() {
+    apt-get install -y --no-install-recommends $1 > /dev/null
+}
+function app_available() {
+    if [ `apt-cache search $1 | grep -o "$1" | uniq | wc -l` = "1" ]; then
+        echo "Package is available : $1"
+        PACKAGE_INSTALL="1"
+    else
+        echo "Package $1 is NOT available for install"
+        echo  "We can not continue without this package..."
+        echo  "Exitting now.."
+        exit 0
+    fi
+}
+function _package_install {
+    app_available $1
+    if [ "${PACKAGE_INSTALL}" = "1" ]; then
+        if [ "$(dpkg-query -l $1 | tail -n1 | cut -c1-2)" = "ii" ]; then
+             echo  "package is already_installed: $1"
+        else
+            echo  "installing package : $1, please wait.."
+            app_install $1
+            sleep 0.5
+        fi
+    fi
+}
+
+function _package_install_no_recommends {
+    app_available $1
+    if [ "${PACKAGE_INSTALL}" = "1" ]; then
+        if [ "$(dpkg-query -l $1 | tail -n1 | cut -c1-2)" = "ii" ]; then
+             echo  "package is already_installed: $1"
+        else
+            echo  "installing package : $1, please wait.."
+            app_install_norecommends $1
+            sleep 0.5
+        fi
+    fi
+}

@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-# install_application php curl git
+# recursive_install $APPLICATIONS_DIR/php curl git

@@ -1,10 +1,8 @@
 #!/usr/bin/env bash
 
-# this should be a makfile but for simplicity just run as a shell script
-
-# all these functions should be in the makefile
-
-
+# git stash
+# git pull origin master
+# git stash pop
 
 application_installed(){
 
@@ -17,12 +15,18 @@ add_dotfiles(){
 
     bsname=$(basename $1)
 
+    if [ -r "$1/dotfiles/$HOME" ] && [ -d "$1/dotfiles/$HOME" ]; then
+
+      ln -sf $1/dotfiles/$HOME/.[^.]* ~/
+
+    fi
+
     if [ "$bsname" == "$OS" ]; then
 
       for file in $1/dotfiles/.[^.]* ; do
 
         sudo mkdir -p "$DOTFILES/$(basename $(dirname "$1"))"
-        sudo ln -sf $file $DOTFILES/$(basename $(dirname "$1"))/.$bsname$(basename "$file")
+        sudo ln -sf $file $DOTFILES/$(basename $(dirname "$1"))/.$OS$(basename "$file")
 
       done;
 
@@ -34,23 +38,19 @@ add_dotfiles(){
   fi
 
 }
-run_install_scripts(){
 
-  include "$1/pre-install.sh" "$1/install.sh" "$1/post-install.sh"
-  # npm install
-  # composer install
-}
 install_application(){
 
   if ! application_installed "$(basename "$1")";  then
-    run_install_scripts "$1"
-  fi
+    include "$1/pre-install.sh" "$1/install.sh"
     add_dotfiles "$1"
-
-
-  # if installed else add remove
-
+    include "$1/post-install.sh"
+  else
+    echo "Updating $(basename $1)"
+    include "$1/update.sh"
+  fi
 }
+
 
 # su - $USER
 
@@ -59,7 +59,7 @@ if [ -z "$USR_SRC" ]; then
 fi
 
 sudo mkdir -p $USR_SRC
-sudo chown -R $USER $USR_SRC
+sudo chmod -R ug+w $USR_SRC;
 
 # # run from location with write permissions
 # cd ~/
@@ -75,74 +75,71 @@ if [ -z "$DOTFILES" ]; then
 fi
 sudo mkdir -p $DOTFILES
 
+
 GIT_DOMAIN_USERNAME_REPONAME="github.com/tarranjones/setup" #try to create dynamically
 
 REPO_DIR="$GIT_ARCHIVE/$GIT_DOMAIN_USERNAME_REPONAME"
 
 OS=$( uname -s | tr '[:upper:]' '[:lower:]')
+PLATFORM_DIR=$REPO_DIR/$OS
+APPLICATIONS_DIR=$REPO_DIR/applications
+PLATFORM_APPLICATIONS_DIR=$PLATFORM_DIR/applications
 
-PLATFORM_APPLICATIONS=$REPO_DIR/platform/$OS/applications
 
-sudo mkdir -p $REPO_DIR;
 
-if ! git -C $REPO_DIR pull; then
-  sudo rm -rf $REPO_DIR
-  sudo git clone https://$GIT_DOMAIN_USERNAME_REPONAME.git $REPO_DIR
+# sudo chown -R $(id -u):$(id -g) "$(git rev-parse --show-toplevel)/.git/"
+if [ -r "$REPO_DIR/.git" ] && [ -d "$REPO_DIR/.git" ]; then
+  sudo chown -R $USER $REPO_DIR/.git/
+fi
+if ! git -C $REPO_DIR pull 2>/dev/null ; then
+    sudo rm -rf $REPO_DIR
+    sudo git clone https://$GIT_DOMAIN_USERNAME_REPONAME.git $REPO_DIR
+    sudo chown -R $USER $REPO_DIR/.git/
 fi
 
-cd $REPO_DIR
+sudo git -C $REPO_DIR submodule update --init --recursive --remote --merge
 
-git -C $REPO_DIR submodule update --init --recursive --remote --merge
 
-DOTFILE_DIRNAME="$REPO_DIR/dotfiles"
+# COPY DEVELOPMENT VERSION TO REPO_DIR (INSTEAD OF OUTOFDATE GIT REPO)
+#############################################
+sudo rm -fr $REPO_DIR/*
+sudo cp -Rf $(dirname $0)/ $REPO_DIR/
+sudo mkdir $REPO_DIR/dotfiles
+sudo git clone https://github.com/tarranjones/dotfiles.git
+cd $REPO_DIR # just so we dont do anything to the dev directory
+##############################################
 
-[ -r $DOTFILE_DIRNAME/.env ] && [ -f $DOTFILE_DIRNAME/.env ] && . $DOTFILE_DIRNAME/.env
-[ -r $DOTFILE_DIRNAME/.functions ] && [ -f $DOTFILE_DIRNAME/.functions ] && . $DOTFILE_DIRNAME/.functions
 
-# symlink dir
-sudo rm -r $DOTFILES;
-# sudo ln -sf "$DOTFILE_DIRNAME" $DOTFILES
+# source some helper functions and variables
+[ -r $REPO_DIR/dotfiles/.env ] && [ -f $REPO_DIR/dotfiles/.env ] && . $REPO_DIR/dotfiles/.env
+[ -r $REPO_DIR/dotfiles/.functions ] && [ -f $REPO_DIR/dotfiles/.functions ] && . $REPO_DIR/dotfiles/.functions
 
-# symlink files not dir
-sudo mkdir -p $DOTFILES
+recursive_install(){
 
-sudo ln -sf $DOTFILE_DIRNAME/.[^.]*  $DOTFILES/
-
-#Run OS install preferences/ defaults
-run_install_scripts "$REPO_DIR/platfrom/$OS"
-
-#Add OS dotfiles .darwin.functions
-for file in $REPO_DIR/platform/$OS/dotfiles/.[^.]* ; do
-
-  sudo ln -sf $file $DOTFILES/.$OS$(basename $file)
-
-done;
-
-#single $OS only Applicaions - system package managers, terminals etc- homebrew, linuxbrew, Chocolatey, iterm, babun, scoop)
-#kept seperate because they most likely need installing first
-for app_dir in $PLATFORM_APPLICATIONS/* ; do
-
-  if [ -r "$app_dir" ] && [ -d "$app_dir" ]; then
-
-    install_application "$app_dir";
-
+  if [ -r "$1" ] && [ -d "$1" ]; then
+    echo "Installing $(basename $(dirname $1))/$(basename $1)"
+    include "$1/pre-install.sh" "$1/install.sh"
+    add_dotfiles "$1"
+    include "$1/post-install.sh"
   fi
 
-done;
-
-for app_dir in $REPO_DIR/applications/* ; do
-
-  if [ -r "$app_dir" ] && [ -d "$app_dir" ]; then
-
-    #cross platform install
-    install_application "$app_dir";
-
-    if [ -r "$app_dir/$OS" ] && [ -d "$app_dir/$OS" ]; then
-
-      # platform specific install
-      install_application "$app_dir/$OS";
-    fi
-
+  if [ -r "$1/$OS" ] && [ -d "$1/$OS" ]; then
+    recursive_install "$1/$OS"
   fi
 
-done;
+  if [ -r "$1/applications" ] && [ -d "$1/applications" ]; then
+    for app_dir in $1/applications/* ; do
+      recursive_install $app_dir
+    done;
+  fi
+}
+recursive_install $REPO_DIR
+
+
+$REPO_DIR/dotfiles/bootstrap.sh
+
+
+
+
+
+

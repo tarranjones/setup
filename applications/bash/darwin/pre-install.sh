@@ -1,1 +1,1 @@
-install_application $PLATFORM_APPLICATIONS/brew
+# recursive_install $PLATFORM_APPLICATIONS/brew

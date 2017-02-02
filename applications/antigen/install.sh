@@ -1,3 +1,4 @@
 # create symlinks
-# .zshrc
+# ~/.zshrc
+
 # installed via git update submodule

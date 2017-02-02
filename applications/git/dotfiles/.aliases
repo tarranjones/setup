@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+# git
+alias g="git"
+
+alias push="git push"
+alias pull="git pull"
+
+# Undo a `git push`
+alias undopush="git push -f origin HEAD^:master"
+
+# git root
+alias gr='[ ! -z `git rev-parse --show-cdup` ] && cd `git rev-parse --show-cdup || pwd`'
+
+alias master="git checkout master"
+# alias dev="git checkout dev"
+
+#git-fire
+alias fire="git fire";
+# git config --global alias.out fire
+# git config --global alias.going fire
+
+# alias wasdrill=""
+# alias falseAlarm=""
+
+
+# git-flow
+

@@ -1,7 +1,11 @@
 #!/usr/bin/env bash
 
+brew remove bash
 brew install bash
-# Add the new shell to the list of legit shells
-sudo bash -c "echo /usr/local/bin/bash >> /private/etc/shells"
-# appendtofile "/usr/local/bin/bash" /private/etc/shells
-chsh -s /usr/local/bin/bash  $USER
+
+BASHPATH=$(brew --prefix)/bin/bash
+#sudo echo $BASHPATH >> /etc/shells
+sudo bash -c 'echo $(brew --prefix)/bin/bash >> /etc/shells'
+chsh -s $BASHPATH # will set for current user only.
+echo $BASH_VERSION # should be 4.x not the old 3.2.X
+# Later, confirm iterm settings aren't conflicting.
