@@ -1,1 +1,0 @@
-recursive_install $APPLICATIONS_DIR/node

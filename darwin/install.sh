@@ -1,20 +1,14 @@
-# Ask for the administrator password upfront
-sudo -v
 
-# Keep-alive: update existing `sudo` time stamp until `.osx` has finished
-while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done 2>/dev/null &
 
 sudo xcodebuild -license accept
 
-install_application $PLATFORM_APPLICATIONS_DIR/brew
+recursive_install $OS_APP_DIR/brew
 
-install_application $APPLICATIONS_DIR/node
+recursive_install $APP_DIR/node
 
-npm install --global macos-setup-defaults-cli
-
-macos-setup-defaults defaults-write.json
-
-npm remove --global macos-setup-defaults-cli
+# npm install --global macos-defaults-setup@latest
+# macos-defaults-setup ../defaults-write.json
+# npm remove --global macos-defaults-setup-cli
 
 # sudo pmset
 # sudo nvram

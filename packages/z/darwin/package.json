@@ -1,0 +1,7 @@
+{
+  "name": "z",
+  "version":"0.0.1",
+  "scripts" : {
+    "install": "brew install z"
+  }
+}

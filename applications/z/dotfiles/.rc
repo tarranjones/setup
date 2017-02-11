@@ -1,1 +1,0 @@
-[ -s $zpath ] && source $zpath
