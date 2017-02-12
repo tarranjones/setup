@@ -29,11 +29,12 @@ dotfiles_dir(){
 
   if [ -r "$1" ] && [ -d "$1" ] && [ $(basename -- $1) == 'dotfiles' ]; then
 
-    if [ -r $1/'$HOME' ] && [ -d $1/'$HOME' ]; then
-      for item in $1/'$HOME'/.[^.]* ; do
-        sudo ln -sf $item ~/
-       done;
-    fi
+    # if [ -r $1/'$HOME' ] && [ -d $1/'$HOME' ]; then
+    #   for item in $1/'$HOME'/.[^.]* ; do
+    #     sudo ln -sf $item ~/
+    #    done;
+    # fi
+    sudo cp -as "$1/'$HOME'" ~/
 
     dir_name=$DOTFILES
 
@@ -190,6 +191,3 @@ exit;
 [ -r $REPO_DIR/dotfiles/bootstrap.sh ] && [ -f $REPO_DIR/dotfiles/bootstrap.sh ] && . $REPO_DIR/dotfiles/bootstrap.sh
 
 # source $DOTFILES/.rc
-
-
-

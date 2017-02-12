@@ -5,6 +5,9 @@ AUTHOR_URL="http://tarranjones.com"
 AUTHOR_EMAIL="tarrandavidjones@gmail.com"
 
 
+hash pbcopy >/dev/null 2>&1 || alias pbcopy="xclip -selection clipboard"
+hash pbpaste >/dev/null 2>&1 || alias pbpaste="xclip -selection clipboard -o"
+
 
 mkdir -p $HOME/.ssh
 chmod 0700 $HOME/.ssh
@@ -19,7 +22,7 @@ ssh_keygen(){
   if [ $# -gt 1 ]; then
     host="${1#*@}"
     user="${1%@*}"
-    ssh_config_host "$user.$host-$2" "$host" "$user" $filename
+    ssh_config_host "$user.$host:$2" "$host" "$user" $filename
   fi
   eval "$(ssh-agent -s)"
   ssh-add $filename
