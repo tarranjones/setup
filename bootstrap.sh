@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+# set -x
+
+set -e
+# set -v
+
+# export PS4='+(${BASH_SOURCE}:${LINENO}): ${FUNCNAME[0]:+${FUNCNAME[0]}(): }'
+
 command_exists(){
   command -v "$(basename "$1")" >/dev/null 2>&1
 }
@@ -97,6 +104,15 @@ recursive_install(){
   install_package $1;
   recursive_install_packages $1;
 }
+reset_dir(){
+  sudo rm -fr $1
+  set_dir $1;
+}
+set_dir(){
+  sudo mkdir -p $1
+  sudo chmod -R ug+w $1;
+  sudo chown -R $(id -unr):$(id -gnr) $1;
+}
 
 # Ask for the administrator password upfront
 sudo -v
@@ -110,8 +126,7 @@ if [ -z "$USR_SRC" ]; then
   export USR_SRC="/usr/local/src";
 fi
 
-sudo mkdir -p $USR_SRC
-sudo chmod -R ug+w $USR_SRC;
+set_dir $USR_SRC
 
 # # run from location with write permissions
 # cd ~/
@@ -120,14 +135,12 @@ if [ -z "$GIT_ARCHIVE" ]; then
   export GIT_ARCHIVE="$USR_SRC/git";
 fi
 
-sudo mkdir -p $GIT_ARCHIVE
-sudo chown -R $(id -unr):$(id -gnr) $GIT_ARCHIVE
+set_dir $GIT_ARCHIVE
 
 if [ -z "$DOTFILES" ]; then
   export DOTFILES="$USR_SRC/dotfiles";
 fi
-sudo mkdir -p $DOTFILES
-sudo chown -R $(id -unr):$(id -gnr) $DOTFILES
+set_dir $DOTFILES
 
 GIT_DOMAIN_USERNAME_REPONAME="github.com/tarranjones/setup" #try to create dynamically
 REPO_DIR="$GIT_ARCHIVE/$GIT_DOMAIN_USERNAME_REPONAME"
@@ -157,19 +170,16 @@ absolute_path=$( cd "$(dirname "${BASH_SOURCE}")" ; pwd -P )
 
 dev_dotfiles=$(dirname $absolute_path)/dotfiles
 
-sudo rm -fr $REPO_DIR/
-sudo mkdir -p $REPO_DIR
+reset_dir $REPO_DIR/
 sudo cp -Rf $absolute_path/ $REPO_DIR/
 sudo rm -fr  $REPO_DIR/dotfiles
 sudo cp -Rf $dev_dotfiles/ $REPO_DIR/dotfiles
 
-sudo chown -R $(id -unr):$(id -gnr) $REPO_DIR
 
 cd $REPO_DIR # just so we dont do anything to the dev directory
 ##############################################
 
-
-rm -fr  $DOTFILES
+sudo rm -fr $DOTFILES
 
 [ -r $REPO_DIR/dotfiles/.env ] && [ -f $REPO_DIR/dotfiles/.env ] && . $REPO_DIR/dotfiles/.env
 [ -r $REPO_DIR/dotfiles/.functions ] && [ -f $REPO_DIR/dotfiles/.functions ] && . $REPO_DIR/dotfiles/.functions

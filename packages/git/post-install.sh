@@ -1,8 +1,12 @@
 # setup git credentials
-# git config --global user.name "$USERNAME"
-# git config --global user.email "$EMAIL"
-# git config --global core.editor "$EDITOR"
-git config --global credential.helper osxkeychain
+
+AUTHOR_NAME="Tarran Jones"
+AUTHOR_EMAIL="tarrandavidjones@gmail.com"
+AUTHOR_URL="http://tarranjones.com"
+
+git config --global user.name "$AUTHOR_NAME"
+git config --global user.email "$AUTHOR_EMAIL"
+git config --global core.editor "$EDITOR"
 
 # appendtofile "*.local" "$GIT_GITIGNORE_GLOBAL"
 # git config --global core.excludesfile "$GIT_GITIGNORE_GLOBAL"

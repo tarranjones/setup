@@ -69,5 +69,5 @@ ssh_config_host(){
   echo -e "Host $1\n\tHostName $2\n\tPreferredAuthentications publickey\n\t${3:+User $3\n\t}${4:+IdentityFile $4\n\t}" >> ~/.ssh/config
 }
 
-# ssh_setup_key git@bitbucket.org tarranjones
-# ssh_setup_key git@github.com tarranjones
+ssh_setup_key git@bitbucket.org tarranjones
+ssh_setup_key git@github.com tarranjones
