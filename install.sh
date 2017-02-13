@@ -5,6 +5,8 @@ AUTHOR_URL="http://tarranjones.com"
 AUTHOR_EMAIL="tarrandavidjones@gmail.com"
 
 
+hash pbcopy >/dev/null 2>&1 || alias pbcopy="xclip -selection clipboard"
+hash pbpaste >/dev/null 2>&1 || alias pbpaste="xclip -selection clipboard -o"
 
 mkdir -p $HOME/.ssh
 chmod 0700 $HOME/.ssh

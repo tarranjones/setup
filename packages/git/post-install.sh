@@ -1,8 +1,12 @@
 # setup git credentials
-# git config --global user.name "$USERNAME"
-# git config --global user.email "$EMAIL"
-# git config --global core.editor "$EDITOR"
-git config --global credential.helper osxkeychain
+
+AUTHOR_NAME="Tarran Jones"
+AUTHOR_EMAIL="tarrandavidjones@gmail.com"
+AUTHOR_URL="http://tarranjones.com"
+
+git config --global user.name "$AUTHOR_NAME"
+git config --global user.email "$AUTHOR_EMAIL"
+git config --global core.editor "$EDITOR"
 
 # appendtofile "*.local" "$GIT_GITIGNORE_GLOBAL"
 # git config --global core.excludesfile "$GIT_GITIGNORE_GLOBAL"
@@ -32,15 +36,6 @@ unset add_git_identity_alias
 
 
 # archive_repo github.com/rupa/z
-
-
-
-# Don't ask ssh password all the time
-if [ "$(uname -s)" = "Darwin" ]; then
-  git config --global credential.helper osxkeychain
-else
-  git config --global credential.helper cache
-fi
 
 # better diffs
 if which diff-so-fancy > /dev/null 2>&1; then
