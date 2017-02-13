@@ -43,7 +43,7 @@ unset add_git_identity_alias
 if [ "$(uname -s)" = "Darwin" ]; then
   git config --global credential.helper osxkeychain
 else
-  git config --global credential.helper cache
+	git config --global credential.helper 'cache --timeout=3600'
 fi
 
 # better diffs
