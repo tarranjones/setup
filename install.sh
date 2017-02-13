@@ -19,9 +19,9 @@ ssh_keygen(){
   if [ $# -gt 1 ]; then
     host="${1#*@}"
     user="${1%@*}"
-    ssh_config_host "$user.$host-$2" "$host" "$user" $filename
+    ssh_config_host "$2@$host" "$host" "$user" $filename
   fi
-  eval "$(ssh-agent -s)"
+  # http://www.funtoo.org/Keychain
   ssh-add $filename
 }
 
